@@ -9,6 +9,10 @@ class board{
 	}
 
 	addPostIt(){
+		return document.getElementsByClassName("plus")[0];
+	}
+	createPostIt(list){
+		this.list.push(new postIt(list[list.length-1].id));
 
 	}
 
@@ -23,6 +27,7 @@ class postIt{
 		this.id=id;
 		this.txt=text;
 		this.tit=title;
+		this.del="";
 		this.build();
 	}
 
@@ -51,28 +56,40 @@ class postIt{
 		this.time=document.createElement("small");
 		this.time.innerHTML="12mins";
 		document.querySelectorAll("div.post-it")[this.id].appendChild(this.time);
-
 	}
-
 }
 
 class controler{
 	
 	constructor(){
 		this.id=0;
+		this.mB=new modelBoard();
+		this.b=new board();
+		this.plus=this.b.addPostIt();
+		this.createPostIt();
+
 	}
 	createPostIt(){
 		this.id++;
-		//addEventListener(...)
-		this.postIt=new postIt(this.id);
+		var that=this;
+		this.plus.addEventListener("click",
+			function(){
+				that.mB.addPostIt(that.id);
+				that.b.createPostIt(that.mB.list);
+			}
+		);
+		
+
 	}
 }
 
 class modelPostIt{
 
-	constructor(title="",text=""){
+	constructor(id, title="",text=""){
+		this.id=id;
 		this.txt=text;
 		this.tit=title;
+		this.time;
 	}
 }
 
@@ -80,10 +97,12 @@ class modelBoard{
 	
 	constructor(){
 		this.list=[];
+		this.con=-1;
 	}
 
 	addPostIt(){
-
+		this.con++;
+		this.list.push(new modelPostIt(this.con));
 	}
 
 	delete(postIt){
