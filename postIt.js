@@ -13,11 +13,16 @@ class board{
 	}
 	createPostIt(list){
 		this.list.push(new postIt(list[list.length-1].id));
-
+		console.log(this.list);
 	}
 
-	delete(postIt){
-
+	delete(x){
+		console.log(this.list[x]);
+		for (let i=0;i<this.list.length;i++){
+			if(x.parentElement == //this.list[x].container)
+			this.list[x].container.remove();
+		}
+		
 	}
 }
 
@@ -34,8 +39,7 @@ class postIt{
 	build(){
 	//build the container div
 		this.container=document.createElement("div");
-		this.container.setAttribute("class","post-it");
-		this.container.name=this.id;
+		this.container.setAttribute("class",`post-it ${this.id}`);
 		document.querySelector("div.board").appendChild(this.container);
 	//Create button delete()
 		this.del=document.createElement("img");
@@ -62,24 +66,24 @@ class postIt{
 class controler{
 	
 	constructor(){
-		this.id=0;
+		this.id=-1;
 		this.mB=new modelBoard();
 		this.b=new board();
 		this.plus=this.b.addPostIt();
 		this.createPostIt();
-
 	}
+
 	createPostIt(){
-		this.id++;
+		this.id++;//No entra en el evento el that.id
 		var that=this;
 		this.plus.addEventListener("click",
 			function(){
 				that.mB.addPostIt(that.id);
 				that.b.createPostIt(that.mB.list);
-			}
-		);
-		
-
+				that.b.list[that.id].del.addEventListener("click", function(){
+					that.b.delete(this);
+					});
+			});
 	}
 }
 
