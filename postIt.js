@@ -45,10 +45,10 @@ class board{
 
 	delete(x){
 		for (let i=0;i<this.list.length;i++){
-			if(x.parentElement == this.list[i].container){
+			if(parseInt(x.parentElement.className.substr(8,2))==this.list[i].id){
 				this.list[i].container.remove();
 				this.list.splice(i,1);
-				return i;
+				return parseInt(x.parentElement.className.substr(8,2));
 			}
 		}
 	}
@@ -77,9 +77,11 @@ class postIt{
 		this.del.setAttribute("src","img/cross.png");
 		document.getElementsByClassName(`${this.id}`)[0].appendChild(this.del);
 	//build title input text
-		this.title=document.createElement("input");
-		this.title.setAttribute("file","text");
+		this.title=document.createElement("textarea");
 		this.title.setAttribute("placeholder","Title");
+		this.title.setAttribute("class", "input");
+		this.title.cols="1";
+		this.title.rows="1";
 		document.getElementsByClassName(`${this.id}`)[0].appendChild(this.title);
 	//build the text area
 		this.txt=document.createElement("textarea");
@@ -106,12 +108,13 @@ class postIt{
 		this.del.setAttribute("src","img/cross.png");
 		document.getElementsByClassName(`${this.id}`)[0].appendChild(this.del);
 	//build title input text
-		this.title=document.createElement("input");
-		this.title.setAttribute("file","text");
+		this.title=document.createElement("textarea");
 		this.title.setAttribute("placeholder","Title");
+		this.title.setAttribute("class", "input");
+		this.title.cols="1";
+		this.title.rows="1";
 		let title=document.createTextNode(`${x.title}`);
 		this.title.appendChild(title);
-		console.log(this.title);
 		document.getElementsByClassName(`${this.id}`)[0].appendChild(this.title);
 	//build the text area
 		this.txt=document.createElement("textarea");
@@ -144,8 +147,11 @@ class controler{
 
 	starter(){
 		if(localStorage.postIt){
-
 			this.showPostIt(JSON.parse(localStorage.getItem("postIt")));
+			this.id=this.mB.list[this.mB.list.length-1].id;
+		}
+		if (localStorage.background){
+			this.background(JSON.parse(localStorage.getItem("background")));		
 		}
 	}
 
@@ -166,17 +172,21 @@ class controler{
 				that.saveTxt(this);
 			});
 		}
+	}
 
+	background(value){
+		this.b.background(value);
 	}
 
 	createPostIt(){
 		var that=this;
-		
 		this.select.addEventListener("click", function(){
 			if(that.select.value=="2"){
 				that.b.background(that.select.value);
+				localStorage.setItem("background", JSON.stringify(that.select.value));
 			}else{
 				that.b.background(that.select.value);
+				localStorage.setItem("background", JSON.stringify(that.select.value));
 			}
 		});
 		
@@ -263,7 +273,7 @@ class modelBoard{
 
 	saveTitle(x){
 		for (let i=0;i<this.list.length;i++){
-			if(parseInt(x.parentElement.className[8])==this.list[i].id){
+			if(parseInt(x.parentElement.className.substr(8,2))==this.list[i].id){
 				this.list[i].title=x.value;
 			}
 		}
@@ -272,7 +282,7 @@ class modelBoard{
 	}
 	saveTxt(x){
 		for (let i=0;i<this.list.length;i++){
-			if(parseInt(x.parentElement.className[8])==this.list[i].id){
+			if(parseInt(x.parentElement.className.substr(8,2))==this.list[i].id){
 				this.list[i].txt=x.value;
 			}
 		}
